@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turf War — Conquer Your City</title>
+    <meta name="description" content="A territory conquest game for runners. Run circular routes, conquer zones, and defeat rival teams." />
+    <!-- Mapbox GL CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body, #root { height: 100%; width: 100%; }
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #fff; }
+
+      /* ── Mapbox branding — compacto al máximo ──────────────────── */
+      .mapboxgl-ctrl-logo { opacity: 0.3 !important; transform: scale(0.7) !important; transform-origin: bottom right !important; }
+      .mapboxgl-ctrl-attrib { opacity: 0.35 !important; font-size: 9px !important; }
+      .mapboxgl-ctrl-attrib-button { display: none !important; }
+
+      /* ── Turf War map popup ─────────────────────────────────────── */
+      .turf-popup .mapboxgl-popup-content {
+        background: transparent !important;
+        padding: 0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+      }
+      .turf-popup .mapboxgl-popup-tip { display: none; }
+      .turf-popup .mapboxgl-popup-close-button {
+        color: #9ca3af;
+        font-size: 16px;
+        top: 8px; right: 10px;
+        background: transparent;
+        z-index: 10;
+      }
+      .turf-popup .mapboxgl-popup-close-button:hover { color: #fff; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

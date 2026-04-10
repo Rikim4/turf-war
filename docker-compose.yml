@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: turf_war_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: turf_war
+      POSTGRES_USER: turf_user
+      POSTGRES_PASSWORD: turf_password
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/src/db/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U turf_user -d turf_war']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: turf_war_backend
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://turf_user:turf_password@db:5432/turf_war
+      FRONTEND_URL: http://localhost:5173
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: turf_war_frontend
+    restart: unless-stopped
+    ports:
+      - '5173:5173'
+    env_file:
+      - .env
+    volumes:
+      - ./frontend/src:/app/src
+    command: npm run dev -- --host
+
+volumes:
+  pgdata:

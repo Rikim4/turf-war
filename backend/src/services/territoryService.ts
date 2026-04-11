@@ -151,7 +151,7 @@ export async function processConquest(
   return {
     territoryId: newTerritory.id,
     areaM2,
-    stolenCount: containedTerritories.length,
+    stolenCount: overlappingTerritories.length,
     stolenFrom,
   };
 }

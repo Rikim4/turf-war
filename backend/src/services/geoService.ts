@@ -49,14 +49,11 @@ export function buildPolygonFromRoute(
   try {
     const polygon = turf.polygon([ring]);
 
-    // Validate: try kinks detection (self-intersections)
+    // Validate: reject self-intersecting routes (e.g. out-and-back)
     const kinks = turf.kinks(polygon);
     if (kinks.features.length > 0) {
-      // Fall back to convex hull for self-intersecting routes
-      const pointCollection = turf.featureCollection(
-        simplified.map((p) => turf.point(p))
-      );
-      return turf.convex(pointCollection) as turf.Feature<turf.Polygon> | null;
+      // A self-intersecting route (ida y vuelta) does not enclose real territory
+      return null;
     }
 
     return polygon;

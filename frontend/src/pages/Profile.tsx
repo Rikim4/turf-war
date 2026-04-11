@@ -228,7 +228,7 @@ export function ProfilePage() {
         </div>
 
         {/* ── Stats ─────────────────────────────────────────────────────────── */}
-        <div style={styles.statsGrid}>
+        <div className="stats-grid" style={styles.statsGrid}>
           {[
             { label: 'Territorio total',    value: formatArea(user.total_area_m2) },
             { label: 'Zonas conquistadas',  value: user.territories_won },
@@ -357,7 +357,7 @@ export function ProfilePage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page:       { minHeight: '100vh', background: '#0a0a0a', paddingTop: 72 },
+  page:       { minHeight: '100vh', background: '#0a0a0a', paddingTop: 72, paddingBottom: 80 },
   container:  { maxWidth: 720, margin: '0 auto', padding: '32px 24px' },
   header:     { display: 'flex', alignItems: 'flex-start', gap: 20, marginBottom: 32 },
   avatarWrapper: {

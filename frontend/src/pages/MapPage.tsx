@@ -140,7 +140,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   syncPanel: {
     position: 'absolute',
-    bottom: 32,
+    bottom: 80,
     left: '50%',
     transform: 'translateX(-50%)',
     background: 'rgba(10,10,10,0.90)',

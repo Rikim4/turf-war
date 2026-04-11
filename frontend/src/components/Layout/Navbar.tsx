@@ -2,8 +2,37 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { TEAM_COLORS, TEAM_LABELS } from '../../types';
 
+const MapIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+    <line x1="8" y1="2" x2="8" y2="18" /><line x1="16" y1="6" x2="16" y2="22" />
+  </svg>
+);
+
+const TrophyIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  </svg>
+);
+
+const UsersIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
 export function Navbar() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
   const navLink = (to: string, label: string) => (
@@ -21,51 +50,70 @@ export function Navbar() {
     </Link>
   );
 
+  const isActive = (path: string) => location.pathname === path;
+
   return (
-    <nav style={styles.nav}>
-      {/* Logo */}
-      <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-        <img src="/app-logo.png" alt="Turf War" style={{ width: 32, height: 32, objectFit: 'contain' }} />
-        <span style={styles.logo}>TURF WAR</span>
-      </Link>
-
-      {/* Nav links */}
-      <div style={styles.links}>
-        {navLink('/', 'Mapa')}
-        {navLink('/leaderboard', 'Ranking')}
-        {user && navLink('/friends', 'Amigos')}
-        {user && navLink('/profile', 'Mi Perfil')}
-      </div>
-
-      {/* User info */}
-      {user ? (
-        <div style={styles.userInfo}>
-          <div
-            style={{
-              ...styles.teamBadge,
-              backgroundColor: TEAM_COLORS[user.team],
-            }}
-          >
-            {TEAM_LABELS[user.team]}
-          </div>
-          <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-            <img
-              src={user.profile_picture}
-              alt={user.username}
-              style={{ ...styles.avatar, cursor: 'pointer' }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${user.firstname}`;
-              }}
-            />
-            <span style={{ ...styles.username, color: '#e5e7eb' }}>{user.firstname}</span>
-          </Link>
-        </div>
-      ) : (
-        <Link to="/login" style={styles.loginBtn}>
-          Conectar con Strava
+    <>
+      {/* ── Desktop top bar ──────────────────────────────────────── */}
+      <nav style={styles.nav}>
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <img src="/app-logo.png" alt="Turf War" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+          <span style={styles.logo}>TURF WAR</span>
         </Link>
-      )}
-    </nav>
+
+        <div className="desktop-nav" style={styles.links}>
+          {navLink('/', 'Mapa')}
+          {navLink('/leaderboard', 'Ranking')}
+          {user && navLink('/friends', 'Amigos')}
+          {user && navLink('/profile', 'Mi Perfil')}
+        </div>
+
+        {user ? (
+          <div className="desktop-user" style={styles.userInfo}>
+            <div style={{ ...styles.teamBadge, backgroundColor: TEAM_COLORS[user.team] }}>
+              {TEAM_LABELS[user.team]}
+            </div>
+            <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+              <img
+                src={user.profile_picture}
+                alt={user.username}
+                style={{ ...styles.avatar, cursor: 'pointer' }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${user.firstname}`;
+                }}
+              />
+              <span style={{ ...styles.username, color: '#e5e7eb' }}>{user.firstname}</span>
+            </Link>
+          </div>
+        ) : (
+          <Link to="/login" className="desktop-user" style={styles.loginBtn}>
+            Conectar con Strava
+          </Link>
+        )}
+      </nav>
+
+      {/* ── Mobile bottom tab bar ────────────────────────────────── */}
+      <div className="mobile-nav">
+        <Link to="/" className={isActive('/') ? 'active' : ''}>
+          <MapIcon />
+          <span>Mapa</span>
+        </Link>
+        <Link to="/leaderboard" className={isActive('/leaderboard') ? 'active' : ''}>
+          <TrophyIcon />
+          <span>Ranking</span>
+        </Link>
+        {user && (
+          <Link to="/friends" className={isActive('/friends') ? 'active' : ''}>
+            <UsersIcon />
+            <span>Amigos</span>
+          </Link>
+        )}
+        <Link to={user ? '/profile' : '/login'} className={isActive('/profile') || isActive('/login') ? 'active' : ''}>
+          <UserIcon />
+          <span>{user ? 'Perfil' : 'Login'}</span>
+        </Link>
+      </div>
+    </>
   );
 }
 
@@ -118,15 +166,6 @@ const styles: Record<string, React.CSSProperties> = {
   username: {
     fontSize: 14,
     color: '#d1d5db',
-  },
-  logoutBtn: {
-    background: 'none',
-    border: '1px solid rgba(255,255,255,0.2)',
-    color: '#9ca3af',
-    padding: '4px 12px',
-    borderRadius: 6,
-    cursor: 'pointer',
-    fontSize: 12,
   },
   loginBtn: {
     background: '#FC4C02',

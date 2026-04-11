@@ -53,7 +53,7 @@ export function LeaderboardPage() {
 
         {/* ── Team cards (clickable) ─────────────────────────────────────── */}
         {data && (
-          <div style={styles.teamsGrid}>
+          <div className="teams-grid" style={styles.teamsGrid}>
             {TEAMS.map((team) => {
               const stats  = data.teams.find((t) => t.team === team);
               const pct    = stats ? ((stats.total_area_m2 / totalArea) * 100).toFixed(1) : '0';
@@ -199,11 +199,11 @@ export function LeaderboardPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page:      { minHeight: '100vh', background: '#0a0a0a', paddingTop: 72 },
+  page:      { minHeight: '100vh', background: '#0a0a0a', paddingTop: 72, paddingBottom: 80 },
   container: { maxWidth: 760, margin: '0 auto', padding: '32px 24px' },
   title:     { fontSize: 28, fontWeight: 800, color: '#fff', marginBottom: 28, letterSpacing: '-0.01em' },
 
-  teamsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 40 },
+  teamsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 40 } as React.CSSProperties,
 
   teamCard: {
     border: '1px solid',

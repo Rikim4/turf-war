@@ -43,7 +43,7 @@ export function LoginPage() {
           <h2 style={styles.sectionTitle}>Elige tu equipo</h2>
           <p style={styles.sectionNote}>Esta decisión es permanente. Elige con sabiduría.</p>
 
-          <div style={styles.teamsGrid}>
+          <div className="login-teams-grid" style={styles.teamsGrid}>
             {TEAMS.map((team) => (
               <button
                 key={team}

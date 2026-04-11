@@ -34,6 +34,39 @@
         z-index: 10;
       }
       .turf-popup .mapboxgl-popup-close-button:hover { color: #fff; }
+
+      /* ── Responsive — Mobile ───────────────────────────────────── */
+      @media (max-width: 768px) {
+        .desktop-nav { display: none !important; }
+        .desktop-user { display: none !important; }
+        .mobile-nav { display: flex !important; }
+        .teams-grid { grid-template-columns: 1fr !important; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        .login-teams-grid { grid-template-columns: 1fr !important; }
+      }
+      @media (min-width: 769px) {
+        .mobile-nav { display: none !important; }
+      }
+
+      /* ── Mobile bottom nav ──────────────────────────────────────── */
+      .mobile-nav {
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
+        background: rgba(10,10,10,0.97); backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 6px 0 env(safe-area-inset-bottom, 6px);
+        height: 60px;
+      }
+      .mobile-nav a {
+        display: flex; flex-direction: column; align-items: center; gap: 2px;
+        text-decoration: none; font-size: 10px; color: #6b7280;
+        padding: 4px 12px; transition: color 0.2s;
+      }
+      .mobile-nav a.active { color: #fff; }
+      .mobile-nav a svg { width: 22px; height: 22px; }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
   </head>
   <body>

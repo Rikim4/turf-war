@@ -288,17 +288,18 @@ export function ProfilePage() {
                     </div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  {act.is_circular && (() => {
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                  {act.is_circular ? (() => {
                     const actTeamColor = act.conquered_team ? TEAM_COLORS[act.conquered_team as keyof typeof TEAM_COLORS] : teamColor;
                     return <span style={{ ...styles.badge, background: `${actTeamColor}33`, color: actTeamColor }}>Circular ✓</span>;
-                  })()}
-                  {act.territory_id && act.conquered_team && (
+                  })() : (
+                    <span style={{ ...styles.badge, background: 'rgba(239,68,68,0.15)', color: '#ef4444' }}>No circular ✗</span>
+                  )}
+                  {act.conquered_team && (
                     <span style={{ ...styles.badge, background: `${TEAM_COLORS[act.conquered_team as keyof typeof TEAM_COLORS]}22`, color: TEAM_COLORS[act.conquered_team as keyof typeof TEAM_COLORS] }}>
                       {TEAM_LABELS[act.conquered_team as keyof typeof TEAM_LABELS]}
                     </span>
                   )}
-                  {!act.is_circular && <span style={styles.badgeGray}>No circular</span>}
                 </div>
               </div>
             ))}

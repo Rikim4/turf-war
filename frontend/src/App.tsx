@@ -7,6 +7,7 @@ import { ProfilePage } from './pages/Profile';
 import { PublicProfilePage } from './pages/PublicProfile';
 import { FriendsPage } from './pages/Friends';
 import { LeaderboardPage } from './pages/Leaderboard';
+import { TeamRankingPage } from './pages/TeamRanking';
 import { AuthSuccessPage } from './pages/AuthSuccess';
 
 const queryClient = new QueryClient({
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/profile/:userId" element={<PublicProfilePage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/leaderboard/:team" element={<TeamRankingPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

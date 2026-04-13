@@ -26,6 +26,34 @@ export async function getTerritories(req: Request, res: Response): Promise<void>
  * Returns team-level statistics (territory count, total area).
  */
 export async function getStats(req: Request, res: Response): Promise<void> {
+  const city = req.query.city as string | undefined;
+
+  if (city) {
+    const [teamStats, leaderboard] = await Promise.all([
+      query(
+        `SELECT u.team,
+                COUNT(DISTINCT t.id)::int AS territory_count,
+                COALESCE(SUM(t.area_m2), 0) AS total_area_m2,
+                COALESCE(SUM(t.area_m2), 0) / 1000000.0 AS total_area_km2
+         FROM users u
+         LEFT JOIN territories t ON t.owner_id = u.id AND t.team = u.team
+         WHERE u.city = $1
+         GROUP BY u.team`,
+        [city]
+      ),
+      query(
+        `SELECT id, username, firstname, lastname, profile_picture,
+                team, territory_count, total_area_m2, territories_won, territories_lost
+         FROM leaderboard
+         WHERE id IN (SELECT id FROM users WHERE city = $1)
+         LIMIT 20`,
+        [city]
+      ),
+    ]);
+    res.json({ teams: teamStats, leaderboard });
+    return;
+  }
+
   const [teamStats, leaderboard] = await Promise.all([
     getTeamStats(),
     query(

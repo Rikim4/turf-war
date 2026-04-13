@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import axios from 'axios';
 import { getActivity, getAthleteActivities } from '../services/stravaService';
 import { processConquest } from '../services/territoryService';
 import { decodePolyline, isCircularRoute } from '../utils/polylineDecoder';
@@ -51,6 +52,22 @@ async function processSingleActivity(
   let conquest = null;
   if (circular && points.length >= 4) {
     conquest = await processConquest(userId, team, activityRow.id, points);
+  }
+
+  // Detect city from activity start coordinates and update user
+  if (act.start_latlng?.length === 2) {
+    try {
+      const [lat, lng] = act.start_latlng;
+      const geoResp = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=10`,
+        { headers: { 'User-Agent': 'TurfWar/1.0' }, timeout: 5000 }
+      );
+      const addr = geoResp.data?.address;
+      const city = addr?.city || addr?.town || addr?.municipality || addr?.village;
+      if (city) {
+        await query('UPDATE users SET city = $1 WHERE id = $2 AND (city IS NULL OR city != $1)', [city, userId]);
+      }
+    } catch { /* non-critical — skip silently */ }
   }
 
   return {

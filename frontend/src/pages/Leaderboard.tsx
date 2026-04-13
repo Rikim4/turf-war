@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { fetchStats } from '../api/territories';
@@ -26,12 +26,15 @@ const TEAM_POWERS: Record<Team, { icon: string; label: string }[]> = {
 
 type TabType = 'global' | 'municipal';
 
-function useUserCity() {
+function useUserCity(enabled: boolean) {
   const [city, setCity] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const attempted = useRef(false);
 
   useEffect(() => {
-    if (!navigator.geolocation) { setLoading(false); return; }
+    if (!enabled || attempted.current || !navigator.geolocation) return;
+    attempted.current = true;
+    setLoading(true);
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -39,7 +42,7 @@ function useUserCity() {
           const { latitude, longitude } = pos.coords;
           const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN;
           const resp = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?types=place&language=es&access_token=${mapboxToken}`
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?types=place,locality&language=es&access_token=${mapboxToken}`
           );
           const data = await resp.json();
           const placeName = data.features?.[0]?.text || null;
@@ -49,10 +52,10 @@ function useUserCity() {
         }
         setLoading(false);
       },
-      () => setLoading(false),
-      { timeout: 10000 }
+      () => { setCity(null); setLoading(false); },
+      { timeout: 15000, maximumAge: 300000, enableHighAccuracy: true }
     );
-  }, []);
+  }, [enabled]);
 
   return { city, loading };
 }
@@ -60,7 +63,7 @@ function useUserCity() {
 export function LeaderboardPage() {
   const [tab, setTab] = useState<TabType>('global');
   const navigate = useNavigate();
-  const { city, loading: cityLoading } = useUserCity();
+  const { city, loading: cityLoading } = useUserCity(tab === 'municipal');
 
   const { data, isLoading } = useQuery({
     queryKey: ['stats'],
@@ -154,7 +157,9 @@ export function LeaderboardPage() {
         {/* ── Leaderboard ───────────────────────────────────────────── */}
         <div style={styles.subtitleRow}>
           <h2 style={styles.subtitle}>
-            Top Runners {tab === 'municipal' && city ? `— ${city}` : '— Global'}
+            {tab === 'municipal'
+              ? `Top Runners — ${city || 'Municipio'}`
+              : 'Top Runners — Global'}
           </h2>
         </div>
 
